@@ -10,6 +10,7 @@ require (
 	github.com/msgmate-io/go-tool-interface v0.0.0 // indirect
 	github.com/urfave/cli/v3 v3.11.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.5
 	gorm.io/gorm v1.25.12 // indirect
 )
 

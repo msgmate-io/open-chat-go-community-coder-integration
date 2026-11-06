@@ -20,12 +20,6 @@ import (
 // Public contract keys shared with the coder tools and the core's auto-sandbox
 // hand-off.
 const (
-	// WorkspaceRootDefault is the sandbox path a workspace is cloned into unless
-	// the chat config declares another one (mirrors the core
-	// sandboxsession.DefaultWorkDir the session layer applies).
-	WorkspaceRootDefault = "/workspace"
-	// WorkspaceRootConfigKey declares a non-standard workspace root.
-	WorkspaceRootConfigKey = "coder_workspace_root"
 	// SelectWorkspaceToolInit is the chat-init tool entry every native coder
 	// agent carries.
 	SelectWorkspaceToolInit = "coder_select_workspace"
@@ -169,65 +163,4 @@ func CanonicalRepo(value string) string {
 		return ""
 	}
 	return parts[len(parts)-2] + "/" + parts[len(parts)-1]
-}
-
-// WorkspaceRootFromConfig reads the declared workspace root of a sandbox config,
-// falling back to WorkspaceRootDefault when the key is absent, empty or not a
-// string.
-func WorkspaceRootFromConfig(config map[string]interface{}) string {
-	if config != nil {
-		if raw, ok := config[WorkspaceRootConfigKey].(string); ok {
-			if trimmed := strings.TrimSpace(raw); trimmed != "" {
-				return strings.TrimRight(trimmed, "/")
-			}
-		}
-	}
-	return WorkspaceRootDefault
-}
-
-// workspaceRootCDTargets returns the literal `cd` targets equivalent to the
-// workspace root (plain/quoted spellings and the git-toplevel spelling).
-func workspaceRootCDTargets(root string) []string {
-	clean := strings.TrimRight(strings.TrimSpace(root), "/")
-	if clean == "" {
-		clean = "/"
-	}
-	targets := []string{clean, `"` + clean + `"`, "'" + clean + "'", "$(git rev-parse --show-toplevel)"}
-	if clean != "/" {
-		targets = append(targets,
-			clean+"/",
-			`"`+clean+`/"`,
-			"'"+clean+"/'",
-			"$(git rev-parse --show-toplevel)/",
-		)
-	}
-	return targets
-}
-
-// StripRedundantWorkspaceRootCD removes a leading `cd <workspace root>` from a
-// shell command when it is followed by more work. changed reports whether the
-// returned command differs from the input.
-func StripRedundantWorkspaceRootCD(command, root string) (string, bool) {
-	trimmed := strings.TrimSpace(command)
-	if trimmed == "" {
-		return command, false
-	}
-	for _, target := range workspaceRootCDTargets(root) {
-		prefix := "cd " + target
-		if !strings.HasPrefix(trimmed, prefix) {
-			continue
-		}
-		rest := strings.TrimSpace(trimmed[len(prefix):])
-		if rest == "" {
-			return "", true
-		}
-		for _, separator := range []string{"&&", ";"} {
-			if strings.HasPrefix(rest, separator) {
-				if next := strings.TrimSpace(rest[len(separator):]); next != "" {
-					return next, true
-				}
-			}
-		}
-	}
-	return command, false
 }

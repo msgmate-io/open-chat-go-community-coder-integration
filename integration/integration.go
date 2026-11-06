@@ -35,6 +35,13 @@ func init() {
 		AdminOnly:      false,
 		UserAccessible: true,
 		ReadmeMarkdown: readmeMarkdown,
+		// The community coder shares the agent config defaults with the private
+		// coder integration through the public coder library.
+		AgentConfig:              coder.AgentConfig,
+		AgentDefaults:            coder.BotDefaults,
+		AgentInteractionDefaults: coder.InteractionDefaults,
+		AgentChatSetup:           coder.ChatSetup,
+		AgentInteractionTags:     coder.InteractionTags,
 	})
 	integrationinterface.RegisterChatBackend(integrationinterface.ChatBackendSpec{
 		Name:             ChatBackendName,
