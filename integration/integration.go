@@ -54,7 +54,9 @@ func communityAgentBackend(ctx context.Context, req integrationinterface.ChatBac
 		Message:  req.Message,
 		Messages: req.Messages,
 		Config:   req.Config,
-		Hooks:    coder.TurnHooks(),
+		// The integration owns the coder system prompt via the shared coder lib.
+		SystemPrompt: coder.ComposeSystemPrompt(req.Config),
+		Hooks:        coder.TurnHooks(),
 	})
 	return err
 }
