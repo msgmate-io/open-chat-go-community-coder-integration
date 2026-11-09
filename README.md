@@ -17,6 +17,14 @@ this repository, so the two cannot drift apart.
   backend, which runs turns through the core's generic tool loop (Host v5 Agent
   runtime).
 
+## CLI
+
+When the TUI integration is also part of the build, the community coder
+contributes the `open-chat code` alias. It launches the TUI and forwards a
+`--bot <username>` selection; the private `msgmate_coder` integration provides
+a richer `code` command (local-folder sandbox + bound chat) and takes precedence
+when both are compiled in.
+
 ## Profile
 
 The community coder is built through the public `community-coder` integration

@@ -42,6 +42,7 @@ func init() {
 		AgentInteractionDefaults: coder.InteractionDefaults,
 		AgentChatSetup:           coder.ChatSetup,
 		AgentInteractionTags:     coder.InteractionTags,
+		CLICommands:              codeCLICommands(),
 	})
 	integrationinterface.RegisterChatBackend(integrationinterface.ChatBackendSpec{
 		Name:             ChatBackendName,
